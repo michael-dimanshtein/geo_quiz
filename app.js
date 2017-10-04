@@ -1,5 +1,8 @@
 var express = require("express");
 var mongojs = require("mongojs");
+var axios = require("axios");
+var parser = require('xml2json');
+
 
 var app = express();
 
@@ -16,14 +19,31 @@ app.get("/", function (req, res) {
 });
 
 app.get("/ajax", function (req, res) {
-    var queryUrl = "http://api.worldbank.org/countries"
+    var queryUrl = "http://api.worldbank.org/countries?per_page=500"
+    axios.get(queryUrl)
+        .then(function (response) {
 
-    $.ajax({
-        url: queryUrl,
-        method: "GET"
-    }).done(function (response) {
-        console.log(response);
-    });
+            var json = parser.toJson(response.data);
+            console.log("to json -> %s", json);
+            //res.send(json);
+            // console.log(response.data);
+
+
+
+
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+
+
+
+    // $.ajax({
+    //     url: queryUrl,
+    //     method: "GET"
+    // }).done(function (response) {
+    //     console.log(response);
+    // });
 });
 
 
